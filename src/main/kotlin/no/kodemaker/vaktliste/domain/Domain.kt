@@ -17,38 +17,39 @@ data class Timeslot(
     val startTime: LocalTime,
     val endTime: LocalTime = startTime.plusMinutes(50)
 ) {
-
     override fun toString(): String = dayOfWeek.toString().padEnd(10, ' ') + startTime.toString()
 }
 
-data class Kodemaker(
+data class Employee(
     val id: String,
     val name: String,
+    val blockedSlots: List<Timeslot> = listOf(),
+)
+
+
+data class Shift(
+    val id: String,
+    val timeslot: Timeslot
 )
 
 @PlanningEntity
-data class Shift(
+data class ShiftAssignment(
     @PlanningId
     val id: String,
-    val timeslot: Timeslot
+
+    val shift: Shift,
+    val shiftIdx: Int,
+
+    @PlanningVariable
+    var employee: Employee? = null,
 ) {
-    // Timefold will set/modify these 2 during constructions and local search
-    @PlanningVariable
-    var kodemaker1: Kodemaker? = null
-
-    @PlanningVariable
-    var kodemaker2: Kodemaker? = null
-
     // NOTE: Timefold requires a no-arg constructor (:
     @Suppress("unused")
     constructor() : this(
-        "dummy",
-        Timeslot(DayOfWeek.SUNDAY, LocalTime.of(0, 0))
+        "dummy[0]",
+        Shift(id="dummy", timeslot = Timeslot(DayOfWeek.SUNDAY, LocalTime.of(0, 0))),
+        0
     )
-
-    override fun toString(): String =
-        "$timeslot: ${kodemaker1?.name?.padEnd(25, ' ')} ${kodemaker2?.name}"
-
 }
 
 
@@ -57,12 +58,12 @@ data class Roster(
     // These are the entities we want timefold to plan for us
     @PlanningEntityCollectionProperty
     @ValueRangeProvider
-    val shifts: List<Shift> = emptyList(),
+    val shiftAssignments: List<ShiftAssignment> = emptyList(),
 
     // These are the facts available for the solution
     @ProblemFactCollectionProperty
     @ValueRangeProvider
-    val kodemakere: List<Kodemaker> = emptyList(),
+    val employees: List<Employee> = emptyList(),
 
     @PlanningScore
     var score: HardSoftScore? = null,

@@ -1,5 +1,10 @@
 plugins {
     kotlin("jvm") version "2.1.0"
+    application
+}
+
+application {
+    mainClass = "no.kodemaker.vaktliste.solver.SolverKt"
 }
 
 group = "no.kodemaker.vaktliste"

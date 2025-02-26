@@ -53,7 +53,7 @@ object Solver {
 
             shifts.flatMap {
                 listOf(
-                    ShiftAssignment(id = "$it.id}[0]" , shift = it, shiftIdx = 1),
+                    ShiftAssignment(id = "$it.id}[0]", shift = it, shiftIdx = 1),
                     ShiftAssignment(id = "$it.id}[1]", shift = it, shiftIdx = 2),
                 )
             },
@@ -106,14 +106,14 @@ object Solver {
 fun main() = runBlocking {
     val res = Solver.solve()
 
-    res.shiftAssignments.groupBy {it.shift.timeslot}.forEach {
+    res.shiftAssignments.groupBy { it.shift.timeslot }.forEach {
         println("${it.key}: ${it.value[0].employee?.name?.padEnd(25, ' ')} - ${it.value[1].employee?.name}")
     }
 
     val countByKm =
         res.shiftAssignments
-            .groupBy { it.employee}
-            .mapValues{ it.value.size }
+            .groupBy { it.employee }
+            .mapValues { it.value.size }
 
 
 
